@@ -15,10 +15,20 @@ import javafx.scene.paint.Color
 import javafx.stage.Stage
 import jetbrains.datalore.plot.MonolithicCommon
 import jetbrains.datalore.vis.swing.jfx.DefaultPlotPanelJfx
+import jetbrains.letsPlot.Stat
 import jetbrains.letsPlot.geom.geomDensity
 import jetbrains.letsPlot.geom.geomHistogram
+import jetbrains.letsPlot.geom.geomPoint
+import jetbrains.letsPlot.ggplot
 import jetbrains.letsPlot.intern.toSpec
 import jetbrains.letsPlot.letsPlot
+import krangl.DataFrame
+import krangl.readCSV
+import krangl.toMap
+import org.jetbrains.numkt.LibraryLoader
+import org.jetbrains.numkt.arange
+import org.jetbrains.numkt.core.reshape
+import java.io.File
 import javax.swing.SwingUtilities
 
 fun main(args: Array<String>) {
@@ -39,7 +49,8 @@ class MainApp : Application() {
             }
 
             val swingNode = SwingNode()
-            createPlot(swingNode)
+//            createPlot(swingNode)
+            createPlotWithPandas(swingNode)
 
             stage.scene = Scene(StackPane(swingNode), 600.0, 400.0)
             stage.show()
@@ -85,5 +96,40 @@ class MainApp : Application() {
         SwingUtilities.invokeLater {
             swingNode.content = pane
         }
+    }
+
+    private fun createPlotWithPandas(swingNode: SwingNode) {
+        javaClass.getResource("/mpg.csv")?.let { url ->
+            val mpg = DataFrame.readCSV(File(url.toURI().path))
+            val p = ggplot(mpg.toMap()) + geomPoint(
+                stat = Stat.count(),
+            ) {
+                x = "displ"
+                y = "hwy"
+                color = "..count.."
+                size = "..count.."
+            }
+            val processedSpec = MonolithicCommon.processRawSpecs(p.toSpec(), frontendOnly = false)
+            val pane = DefaultPlotPanelJfx(
+                processedSpec = processedSpec,
+                preserveAspectRatio = true,
+                preferredSizeFromPlot = false,
+                repaintDelay = 10
+            ) {
+                println(it)
+            }
+
+            SwingUtilities.invokeLater {
+                swingNode.content = pane
+            }
+
+//            createPlotWithNumpy()
+        }
+    }
+
+    private fun createPlotWithNumpy() {
+        LibraryLoader.setPythonConfig("C:\\ProgramData\\Anaconda3")
+        val a = arange(15).reshape(3, 5)
+        println(a)
     }
 }

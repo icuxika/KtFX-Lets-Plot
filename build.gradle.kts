@@ -1,4 +1,5 @@
 import org.gradle.internal.os.OperatingSystem
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     application
@@ -10,7 +11,7 @@ plugins {
 group = "com.icuxika"
 version = "1.0.0"
 
-val compileKotlin: org.jetbrains.kotlin.gradle.tasks.KotlinCompile by tasks
+val compileKotlin: KotlinCompile by tasks
 val compileJava: JavaCompile by tasks
 compileJava.destinationDir = compileKotlin.destinationDir
 
@@ -30,6 +31,8 @@ application {
 
 repositories {
     mavenCentral()
+    maven("https://repo.kotlin.link")
+    maven("https://dl.bintray.com/kotlin/kotlin-datascience")
 }
 
 javafx {
@@ -58,10 +61,20 @@ dependencies {
     }
     implementation("io.github.microutils:kotlin-logging:2.0.6")
     implementation("org.slf4j:slf4j-simple:1.7.30")
+
+    implementation("com.github.holgerbrandl:krangl:0.16.2")
+    implementation("space.kscience:kmath-core:0.3.0-dev-3")
+    implementation("org.jetbrains:kotlin-numpy:0.1.5")
 }
 
 tasks.getByName<Test>("test") {
     useJUnitPlatform()
+}
+
+tasks.withType<KotlinCompile>().configureEach {
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_11.toString()
+    }
 }
 
 runtime {
