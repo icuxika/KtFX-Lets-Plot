@@ -3,7 +3,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     application
-    kotlin("jvm") version "1.4.32"
+    kotlin("jvm") version "1.5.0"
+    kotlin("plugin.serialization") version "1.5.0"
     id("org.openjfx.javafxplugin") version "0.0.9"
     id("org.beryx.runtime") version "1.12.4"
 }
@@ -43,8 +44,11 @@ javafx {
 dependencies {
     implementation(kotlin("stdlib"))
     implementation(kotlin("reflect"))
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.0")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+    testImplementation(kotlin("test"))
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0-RC")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.2.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.2.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.4")
 
     implementation("com.jfoenix:jfoenix:9.0.10")
 
@@ -73,7 +77,7 @@ tasks.getByName<Test>("test") {
 
 tasks.withType<KotlinCompile>().configureEach {
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11.toString()
+        jvmTarget = JavaVersion.VERSION_16.toString()
     }
 }
 
