@@ -22,20 +22,22 @@ import jetbrains.letsPlot.intern.toSpec
 import jetbrains.letsPlot.letsPlot
 import kotlinx.coroutines.*
 import kotlinx.coroutines.javafx.JavaFx
-import krangl.DataFrame
-import krangl.GuessSpec
-import krangl.readDelim
-import krangl.toMap
-import org.apache.commons.csv.CSVFormat
+import org.jetbrains.kotlinx.dataframe.AnyFrame
+import org.jetbrains.kotlinx.dataframe.DataFrame
+import org.jetbrains.kotlinx.dataframe.api.toMap
+import org.jetbrains.kotlinx.dataframe.io.readDelim
 import javax.swing.SwingUtilities
 
 fun main(args: Array<String>) {
     Application.launch(MainApp::class.java, *args)
 }
 
-fun DataFrame.Companion.readCSVAsStream(csvPath: String): DataFrame? {
+fun DataFrame.Companion.readCSVAsStream(csvPath: String): AnyFrame? {
     MainApp::class.java.getResourceAsStream(csvPath)?.let { inputStream ->
-        return readDelim(inputStream, CSVFormat.DEFAULT.withHeader(), false, GuessSpec())
+        return readDelim(
+            inStream = inputStream,
+            csvType = org.jetbrains.kotlinx.dataframe.io.CSVType.DEFAULT
+        )
     }
     return null
 }
@@ -58,17 +60,39 @@ class MainApp : Application() {
             stage.scene = Scene(root, 1200.0, 760.0)
             stage.show()
 
-            plotsContainer.addPlot {
-                val mpg = DataFrame.readCSVAsStream("/mpg.csv")
-                val p = ggplot(mpg!!.toMap()) + geomPoint(
-                    stat = Stat.count(),
-                ) {
-                    x = "displ"
-                    y = "hwy"
-                    color = "..count.."
-                    size = "..count.."
+            DataFrame.readCSVAsStream("/mpg.csv")?.toMap()?.let { map ->
+                plotsContainer.addPlot {
+                    val p = ggplot(map) + geomPoint(
+                        stat = Stat.count(),
+                    ) {
+                        x = "displ"
+                        y = "hwy"
+                        color = "..count.."
+                        size = "..count.."
+                    }
+                    return@addPlot p.toSpec()
                 }
-                return@addPlot p.toSpec()
+
+                plotsContainer.addPlot {
+                    val p = ggplot(map) + geomHistogram(
+                        data = map,
+                        binWidth = 0.5
+                    ) {
+                        x = "displ"
+                    }
+                    return@addPlot p.toSpec()
+                }
+
+                plotsContainer.addPlot {
+                    val p = ggplot(map) {
+                        x = "displ"
+                    } + geomPoint {
+                        x = "displ"
+                        y = "hwy"
+                        color = "cyl"
+                    }
+                    return@addPlot p.toSpec()
+                }
             }
 
             plotsContainer.addPlot {
@@ -91,34 +115,10 @@ class MainApp : Application() {
                         alpha = .3,
                         size = 2.0
                     ) { x = "x" },
-
-                    )
+                )
 
                 val selectedPlotKey = plots.keys.first()
                 return@addPlot plots[selectedPlotKey]!!.toSpec()
-            }
-
-            plotsContainer.addPlot {
-                val mpg = DataFrame.readCSVAsStream("/mpg.csv")
-                val p = ggplot(mpg!!.toMap()) + geomHistogram(
-                    data = mpg.toMap(),
-                    binWidth = 0.5
-                ) {
-                    x = "displ"
-                }
-                return@addPlot p.toSpec()
-            }
-
-            plotsContainer.addPlot {
-                val mpg = DataFrame.readCSVAsStream("/mpg.csv")
-                val p = ggplot(mpg!!.toMap()) {
-                    x = "displ"
-                } + geomPoint {
-                    x = "displ"
-                    y = "hwy"
-                    color = "cyl"
-                }
-                return@addPlot p.toSpec()
             }
         }
     }

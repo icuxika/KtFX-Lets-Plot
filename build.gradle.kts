@@ -2,9 +2,9 @@ import org.gradle.internal.os.OperatingSystem
 
 plugins {
     application
-    kotlin("jvm") version "1.5.31"
-    id("org.openjfx.javafxplugin") version "0.0.9"
-    id("org.beryx.runtime") version "1.12.4"
+    kotlin("jvm") version "1.6.0"
+    id("org.openjfx.javafxplugin") version "0.0.10"
+    id("org.beryx.runtime") version "1.12.7"
 }
 
 group = "com.icuxika"
@@ -39,28 +39,27 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.5.2")
 
-    implementation("org.jetbrains.lets-plot:lets-plot-kotlin-jvm:3.0.2")
-    implementation("org.jetbrains.lets-plot:lets-plot-jfx:2.1.0")
-    implementation("com.github.holgerbrandl:krangl:0.17") {
-        exclude(group = "org.jetbrains.lets-plot", module = "lets-plot-kotlin-jvm")
-    }
+    implementation("org.jetbrains.lets-plot:lets-plot-kotlin-jvm:3.1.0")
+    implementation("org.jetbrains.lets-plot:lets-plot-jfx:2.2.0")
 
-    implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.14.0")
-    implementation("org.apache.logging.log4j:log4j-api:2.14.0")
-    implementation("org.apache.logging.log4j:log4j-core:2.14.0")
+    implementation("org.jetbrains.kotlinx:dataframe:0.8.0-rc-2")
+
+    implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.15.0")
+    implementation("org.apache.logging.log4j:log4j-api:2.15.0")
+    implementation("org.apache.logging.log4j:log4j-core:2.15.0")
 
     // log4j yaml config depends on jackson
-    implementation("com.fasterxml.jackson.core:jackson-core:2.12.0")
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.12.0")
+    implementation("com.fasterxml.jackson.core:jackson-core:2.13.0")
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.0")
 }
 
 tasks.compileJava {
-    options.release.set(11)
+    options.release.set(17)
 }
 
 tasks.compileKotlin {
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11.toString()
+        jvmTarget = "17"
     }
 }
 
