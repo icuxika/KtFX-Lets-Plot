@@ -45,7 +45,12 @@ fun DataFrame.Companion.readCSVAsStream(csvPath: String): AnyFrame? {
 class MainApp : Application() {
 
     override fun start(primaryStage: Stage?) {
-        L.info("应用程序启动")
+        L.trace("[trace]日志控制台输出");
+        L.debug("[debug]日志控制台输出");
+        L.info("[info]日志控制台输出");
+        L.warn("[warn]日志记录到build/application.log中");
+        L.error("[error]日志记录到build/application.log中");
+
         primaryStage?.let { stage ->
             val root = ScrollPane()
             val plotsContainer = FlowPane().apply {
