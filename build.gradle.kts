@@ -12,7 +12,7 @@ version = "1.0.0"
 
 application {
     applicationName = "KtFxLetsPlot"
-    mainClass.set("com.icuxika.MainAppKt")
+    mainClass.set("com.icuxika.DLMainAppKt")
     applicationDefaultJvmArgs = listOf(
         "-XX:+UseZGC",
         "-XX:+ShowCodeDetailsInExceptionMessages",
@@ -35,20 +35,27 @@ dependencies {
     implementation(kotlin("stdlib"))
     implementation(kotlin("reflect"))
     testImplementation(kotlin("test"))
-
+    // Coroutine
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.5.2")
-
-    implementation("org.jetbrains.lets-plot:lets-plot-kotlin-jvm:3.1.0")
-    implementation("org.jetbrains.lets-plot:lets-plot-jfx:2.2.0")
-
+    // Lets Plot
+    implementation("org.jetbrains.lets-plot:lets-plot-jfx:2.2.1") {
+        exclude(group = "org.jetbrains.lets-plot", module = "lets-plot-common")
+    }
+    implementation("org.jetbrains.lets-plot:lets-plot-kotlin-jvm:3.1.1") {
+        exclude(group = "org.jetbrains.lets-plot", module = "lets-plot-common")
+    }
+    // DataFrame
     implementation("org.jetbrains.kotlinx:dataframe:0.8.0-rc-2")
-
-    implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.15.0")
-    implementation("org.apache.logging.log4j:log4j-api:2.15.0")
-    implementation("org.apache.logging.log4j:log4j-core:2.15.0")
-
-    // log4j yaml config depends on jackson
+    // Kotlin DL
+    implementation("org.jetbrains.kotlinx:kotlin-deeplearning-api:0.3.0")
+    implementation("org.jetbrains.kotlinx:kotlin-deeplearning-onnx:0.3.0")
+    implementation("org.jetbrains.kotlinx:kotlin-deeplearning-visualization:0.3.0")
+    // Log4j
+    implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.16.0")
+    implementation("org.apache.logging.log4j:log4j-api:2.16.0")
+    implementation("org.apache.logging.log4j:log4j-core:2.16.0")
+    // Log4j yaml config depends on jackson
     implementation("com.fasterxml.jackson.core:jackson-core:2.13.0")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.0")
 }

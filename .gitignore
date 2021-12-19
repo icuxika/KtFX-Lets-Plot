@@ -4,3 +4,5 @@ out/
 target/
 *.iml
 /.gradle/
+cache/
+model/
