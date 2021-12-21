@@ -1,5 +1,8 @@
 package com.icuxika.examples.visualization
 
+import com.icuxika.visualization.drawConv2DCanvas
+import com.icuxika.visualization.showFX
+import jetbrains.letsPlot.GGBunch
 import org.jetbrains.kotlinx.dl.api.core.WritingMode
 import org.jetbrains.kotlinx.dl.api.core.layer.convolutional.Conv2D
 import org.jetbrains.kotlinx.dl.api.core.loss.Losses
@@ -136,7 +139,7 @@ private fun predict1() {
  */
 private fun predict2() {
     val (train, test) = mnist()
-    lenet5().use {
+    lenet5().use { it ->
         it.compile(
             optimizer = Adam(),
             loss = Losses.SOFT_MAX_CROSS_ENTROPY_WITH_LOGITS,
@@ -145,18 +148,22 @@ private fun predict2() {
         it.loadWeights(File(MODEL_DIRECTORY))
         val fstConv2D = it.layers[1] as Conv2D
         val sndConv2D = it.layers[3] as Conv2D
-        filtersPlot(fstConv2D, columns = 16).show()
+//        filtersPlot(fstConv2D, columns = 16).show()
 //        filtersPlot(sndConv2D, columns = 16).show()
-        drawFilters(fstConv2D.weights.values.toTypedArray()[0], colorCoefficient = 10.0)
+//        drawFilters(fstConv2D.weights.values.toTypedArray()[0], colorCoefficient = 10.0)
+
+        drawConv2DCanvas(fstConv2D.weights.values.toTypedArray()[0], 10.0).showFX()
+        drawConv2DCanvas(sndConv2D.weights.values.toTypedArray()[0], 10.0).showFX()
 
         val layerActivations = modelActivationOnLayersPlot(it, test.getX(42))
 //        layerActivations[0].show()
 //        layerActivations[1].show()
+        (layerActivations[0] as? GGBunch)?.showFX()
 
         val (prediction, activations) = it.predictAndGetActivations(test.getX(42))
-        drawActivations(activations)
-    }
+//        drawActivations(activations)
 
+    }
 }
 
 fun exLeNetMnistVisualization() {

@@ -9,9 +9,7 @@ import javafx.scene.control.Button
 import javafx.stage.Stage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.javafx.JavaFx
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.jetbrains.kotlinx.dl.api.core.Sequential
 import org.jetbrains.kotlinx.dl.api.core.WritingMode
 import org.jetbrains.kotlinx.dl.api.core.layer.core.Dense
@@ -26,8 +24,8 @@ import org.jetbrains.kotlinx.dl.dataset.fashionMnist
 import java.io.File
 
 fun main(args: Array<String>) {
-//    Application.launch(DLMainApp::class.java, *args)
-    exLeNetMnistVisualization()
+    Application.launch(DLMainApp::class.java, *args)
+//    exLeNetMnistVisualization()
 }
 
 class DLMainApp : Application() {
@@ -36,10 +34,8 @@ class DLMainApp : Application() {
         primaryStage?.let { stage ->
             stage.scene = Scene(Button("RUN").apply {
                 onAction = EventHandler {
-                    CoroutineScope(context = Dispatchers.JavaFx).launch {
-                        withContext(context = Dispatchers.IO) {
-                            startGuideUse()
-                        }
+                    CoroutineScope(context = Dispatchers.IO).launch {
+                        exLeNetMnistVisualization()
                     }
                 }
             })
