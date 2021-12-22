@@ -1,8 +1,6 @@
 package com.icuxika.examples.visualization
 
-import com.icuxika.visualization.drawConv2DCanvas
 import com.icuxika.visualization.showFX
-import jetbrains.letsPlot.GGBunch
 import org.jetbrains.kotlinx.dl.api.core.WritingMode
 import org.jetbrains.kotlinx.dl.api.core.layer.convolutional.Conv2D
 import org.jetbrains.kotlinx.dl.api.core.loss.Losses
@@ -139,30 +137,41 @@ private fun predict1() {
  */
 private fun predict2() {
     val (train, test) = mnist()
-    lenet5().use { it ->
+    val sampleIndex = 42
+    val x = test.getX(sampleIndex)
+    val y = test.getY(sampleIndex).toInt()
+    lenet5().use {
         it.compile(
             optimizer = Adam(),
             loss = Losses.SOFT_MAX_CROSS_ENTROPY_WITH_LOGITS,
             metric = Metrics.ACCURACY
         )
         it.loadWeights(File(MODEL_DIRECTORY))
+
+        val numbersPlots = List(3) { imageIndex ->
+            flattenImagePlot(imageIndex, test, it::predict)
+        }
+//        columnPlot(numbersPlots, 3, 256).showFX("测试集预测")
+
         val fstConv2D = it.layers[1] as Conv2D
         val sndConv2D = it.layers[3] as Conv2D
-//        filtersPlot(fstConv2D, columns = 16).show()
-//        filtersPlot(sndConv2D, columns = 16).show()
-//        drawFilters(fstConv2D.weights.values.toTypedArray()[0], colorCoefficient = 10.0)
 
-        drawConv2DCanvas(fstConv2D.weights.values.toTypedArray()[0], 10.0).showFX()
-        drawConv2DCanvas(sndConv2D.weights.values.toTypedArray()[0], 10.0).showFX()
+        filtersPlot(fstConv2D, columns = 16).showFX("卷积层1 Plot展示")
+//        filtersPlot(sndConv2D, columns = 16).showFX("卷积层2 Plot展示")
+        filtersPlot(sndConv2D, columns = 16).show()
 
-        val layerActivations = modelActivationOnLayersPlot(it, test.getX(42))
-//        layerActivations[0].show()
-//        layerActivations[1].show()
-        (layerActivations[0] as? GGBunch)?.showFX()
+//        drawConv2DCanvas32(fstConv2D.weights.values.toTypedArray()[0], 10.0).showFX("卷积层1展示")
+//        drawConv2DCanvas32(sndConv2D.weights.values.toTypedArray()[0], 10.0).showFX("卷积层2展示")
 
-        val (prediction, activations) = it.predictAndGetActivations(test.getX(42))
-//        drawActivations(activations)
+        val layerActivations = modelActivationOnLayersPlot(it, x)
+//        layerActivations[0].showFX("激活层1 Plot展示")
+//        layerActivations[1].showFX("激活层2 Plot展示")
 
+        val (prediction, activations) = it.predictAndGetActivations(x)
+        println("Prediction: $prediction")
+        println("Ground Truth: $y")
+//        drawActivationCanvas(activations, 0, 1)?.showFX("激活层1展示")
+//        drawActivationCanvas(activations, 1, 2)?.showFX("激活层2展示")
     }
 }
 
