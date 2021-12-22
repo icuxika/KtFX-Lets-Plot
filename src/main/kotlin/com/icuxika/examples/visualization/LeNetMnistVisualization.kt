@@ -1,5 +1,6 @@
 package com.icuxika.examples.visualization
 
+import com.icuxika.examples.inference.lenet5
 import com.icuxika.visualization.showFX
 import org.jetbrains.kotlinx.dl.api.core.WritingMode
 import org.jetbrains.kotlinx.dl.api.core.layer.convolutional.Conv2D

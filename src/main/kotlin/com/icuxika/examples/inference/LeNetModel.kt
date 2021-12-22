@@ -1,4 +1,4 @@
-package com.icuxika.examples.visualization
+package com.icuxika.examples.inference
 
 import org.jetbrains.kotlinx.dl.api.core.Sequential
 import org.jetbrains.kotlinx.dl.api.core.activation.Activations

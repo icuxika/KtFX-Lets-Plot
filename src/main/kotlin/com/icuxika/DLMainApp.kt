@@ -1,6 +1,7 @@
 package com.icuxika
 
 import com.icuxika.examples.visualization.exLeNetMnistVisualization
+import com.icuxika.examples.visualization.exSoundNetFSDDVisualization
 import com.icuxika.extensions.logger
 import javafx.application.Application
 import javafx.event.EventHandler
@@ -24,8 +25,9 @@ import org.jetbrains.kotlinx.dl.dataset.fashionMnist
 import java.io.File
 
 fun main(args: Array<String>) {
-    Application.launch(DLMainApp::class.java, *args)
+//    Application.launch(DLMainApp::class.java, *args)
 //    exLeNetMnistVisualization()
+    exSoundNetFSDDVisualization()
 }
 
 class DLMainApp : Application() {
